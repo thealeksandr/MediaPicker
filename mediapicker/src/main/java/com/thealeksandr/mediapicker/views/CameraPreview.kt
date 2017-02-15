@@ -45,6 +45,7 @@ class CameraPreview : SurfaceView, SurfaceHolder.Callback {
     }
 
     fun refreshCamera(camera: Camera) {
+        camera.setDisplayOrientation(90)
         if (mHolder.surface == null) {
             // preview surface does not exist
             return
