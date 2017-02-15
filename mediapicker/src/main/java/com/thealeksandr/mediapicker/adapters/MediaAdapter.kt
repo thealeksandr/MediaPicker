@@ -1,6 +1,7 @@
 package com.thealeksandr.mediapicker.adapters
 
 import android.content.Context
+import android.database.Cursor
 import android.provider.MediaStore
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,17 +15,19 @@ import com.thealeksandr.mediapicker.R
  */
 class MediaAdapter: RecyclerView.Adapter<MediaAdapter.MediaViewHolder> {
 
+    var cursor: Cursor
     private val context: Context
     private var thumbnails: List<Int>? = null
     var onItemClickListener: OnItemClickListener<Int>? = null
 
-    constructor(context: Context, thumbnails: List<Int>?) : super() {
+    constructor(context: Context, cursor: Cursor, thumbnails: List<Int>?) : super() {
         this.thumbnails = thumbnails ?: listOf()
         this.context = context
+        this.cursor = cursor
     }
 
     override fun getItemCount(): Int {
-        return thumbnails?.size ?: 0
+        return cursor.count//thumbnails?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
@@ -39,12 +42,15 @@ class MediaAdapter: RecyclerView.Adapter<MediaAdapter.MediaViewHolder> {
         holder.imageView.setImageBitmap(bitmap)
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MediaViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.view_media_preview,
                 parent, false)
         val holder = MediaViewHolder(view)
         return holder
     }
+
+
 
     /**
      * @see android.support.v7.widget.RecyclerView.ViewHolder.ViewHolder

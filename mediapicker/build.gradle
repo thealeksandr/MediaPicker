@@ -20,9 +20,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    dataBinding {
-        enabled = true
-    }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -35,8 +32,8 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:recyclerview-v7:25.1.0'
+    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.6.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    kapt 'com.android.databinding:compiler:2.2.2'
 
     testCompile 'junit:junit:4.12'
 
@@ -46,6 +43,4 @@ repositories {
     mavenCentral()
 }
 
-kapt {
-    generateStubs = true
-}
+

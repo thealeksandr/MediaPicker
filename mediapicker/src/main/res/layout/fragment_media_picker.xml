@@ -5,6 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+        android:layout_height="300dp"
+        android:layout_width="match_parent"/>
+
     <com.thealeksandr.mediapicker.views.AutofitRecyclerView
         android:id="@+id/media_list_view"
         android:layout_width="match_parent"
