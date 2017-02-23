@@ -23,6 +23,7 @@ class MediaCursorAdapter: CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHold
     private val context: Context
     private val idColumnIndex: Int
     private val typeColumnIndex: Int
+    var onItemClickListener: OnItemClickListener? = null
 
     constructor(context: Context, cursor: Cursor, autoRequery: Boolean)
             : super(context, cursor, autoRequery) {
@@ -36,16 +37,19 @@ class MediaCursorAdapter: CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHold
         var bitmap: Bitmap
         val type = cursor!!.getInt(typeColumnIndex)
         val id = cursor.getLong(idColumnIndex)
+        val uri: Uri
         if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) {
             bitmap = MediaStore.Images.Thumbnails.getThumbnail(context.contentResolver,
                     id,
                     MediaStore.Images.Thumbnails.MINI_KIND, null)
+            uri = Uri.
+                    withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id.toString())
         } else {
             bitmap = MediaStore.Video.Thumbnails.getThumbnail(context.contentResolver,
                     id,
                     MediaStore.Video.Thumbnails.MINI_KIND, null)
 
-            val uri = Uri.
+            uri = Uri.
                     withAppendedPath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id.toString())
 
 
@@ -53,12 +57,14 @@ class MediaCursorAdapter: CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHold
 
             retriever.setDataSource(context, uri)
             val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            //val timeInMillisec = java.lang.Long.parseLong(time)
-
             viewHolder!!.textView.text = time
         }
 
         viewHolder!!.imageView.setImageBitmap(bitmap)
+
+        viewHolder.itemView.setOnClickListener({
+            onItemClickListener?.onClick(id, uri, type)
+        })
 
     }
 
@@ -75,10 +81,13 @@ class MediaCursorAdapter: CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHold
      */
     class MediaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val rootView: View = view
         val imageView: ImageView = view.findViewById(R.id.thumb_image_view) as ImageView
         val textView: TextView = view.findViewById(R.id.duration_text_view) as TextView
 
+    }
+
+    interface OnItemClickListener {
+        fun onClick(id: Long, uri: Uri, type: Int)
     }
 
 }
