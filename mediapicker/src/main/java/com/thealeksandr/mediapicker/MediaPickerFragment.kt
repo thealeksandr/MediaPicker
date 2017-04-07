@@ -48,6 +48,8 @@ class MediaPickerFragment : Fragment() {
         val recyclerView = view.findViewById(R.id.media_list_view) as RecyclerView
         recyclerView.adapter = adapter
 
+
+
         previewImageView = view.findViewById(R.id.preview_image_view) as ImageView
         previewVideoView = view.findViewById(R.id.preview_video_view) as VideoView
 
@@ -97,6 +99,12 @@ class MediaPickerFragment : Fragment() {
     private fun showVideoPreview(uri: Uri) {
         previewImageView?.visibility = View.INVISIBLE
         previewVideoView?.visibility = View.VISIBLE
+        //val thumbnail = ThumbnailUtils.createVideoThumbnail(
+        //        FileUtils.getPath(context, uri), MediaStore.Video.Thumbnails.FULL_SCREEN_KIND)
+        previewVideoView!!.setVideoURI(uri)
+        previewVideoView!!.requestFocus()
+        previewVideoView!!.start()
+
 
     }
 
