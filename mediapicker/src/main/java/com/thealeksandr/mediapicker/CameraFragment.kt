@@ -84,7 +84,8 @@ class CameraFragment :Fragment() {
     override fun onResume() {
         super.onResume()
         if (!hasCamera(activity)) {
-            Toast.makeText(activity, "Sorry, your phone does not have a camera!", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, "Sorry, your phone does not have a camera!",
+                    Toast.LENGTH_LONG).show()
             activity.finish()
         }
         if (mCamera == null) {
@@ -96,7 +97,8 @@ class CameraFragment :Fragment() {
                 releaseCamera()
                 chooseCamera()
             } else {
-                Toast.makeText(activity, "Sorry, your phone has only one camera!", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "Sorry, your phone has only one camera!",
+                        Toast.LENGTH_LONG).show()
             }
         }
     }

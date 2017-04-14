@@ -51,13 +51,6 @@ class CameraFragment2 : Fragment() {
             ORIENTATIONS.append(Surface.ROTATION_270, 180)
         }
     }
- /*private static final SparseIntArray ORIENTATIONS = SparseIntArray();
-    static {
-        ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        ORIENTATIONS.append(Surface.ROTATION_90, 0);
-        ORIENTATIONS.append(Surface.ROTATION_180, 270);
-        ORIENTATIONS.append(Surface.ROTATION_270, 180);
-    }*/
 
 
     override fun onResume() {
@@ -92,7 +85,6 @@ class CameraFragment2 : Fragment() {
     var textureListener: TextureView.SurfaceTextureListener
             = object : TextureView.SurfaceTextureListener {
         override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-            //open your camera here
             openCamera()
         }
 
@@ -106,6 +98,8 @@ class CameraFragment2 : Fragment() {
 
         override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
     }
+
+
 
     private fun openCamera() {
         val manager = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
