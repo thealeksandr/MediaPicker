@@ -28,6 +28,7 @@ import java.util.*
 class CameraFragment :Fragment() {
 
 
+    //https://github.com/pikanji/CameraPreviewSample
     private var mCamera: Camera? = null
     private var mPreview: CameraPreview? = null
     private var mPicture: PictureCallback? = null
