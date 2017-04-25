@@ -23,8 +23,11 @@ public class CameraBasicFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mLayout = new RelativeLayout(getContext());
-        return mLayout;
+        //mLayout = new RelativeLayout(getContext());
+        //mLayout.setBackgroundColor(getResources().getColor(R.color.control_background));
+        View view = inflater.inflate(R.layout.fragment_camera_basic, container, false);
+        mLayout = (RelativeLayout) view.findViewById(R.id.preview_layout);
+        return view;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class CameraBasicFragment extends Fragment {
         // If the OS is pre-gingerbreak, this does not have any effect.
         mPreview = new CameraPreview(getActivity(), 0, CameraPreview.LayoutMode.FitToParent);
         RelativeLayout.LayoutParams previewLayoutParams
-                = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         // Un-comment below lines to specify the size.
         //previewLayoutParams.height = 500;

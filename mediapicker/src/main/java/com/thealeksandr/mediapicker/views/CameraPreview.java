@@ -86,6 +86,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mPictureSizeList = cameraParams.getSupportedPictureSizes();
     }
 
+
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try {
