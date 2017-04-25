@@ -3,8 +3,7 @@ package com.thealeksandr.mediapickerexample
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import com.thealeksandr.mediapicker.Camera2BasicFragment
-import com.thealeksandr.mediapicker.CameraFragment2
+import com.thealeksandr.mediapicker.CameraBasicFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,7 +11,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //showFragment(MediaPickerFragment(), R.id.activity_main)
-        showFragment(Camera2BasicFragment(), R.id.activity_main)
+        //showFragment(Camera2BasicFragment(), R.id.activity_main)
+        showFragment(CameraBasicFragment(), R.id.activity_main)
     }
 
     fun AppCompatActivity.showFragment(fragment: Fragment, containerId: Int) {
