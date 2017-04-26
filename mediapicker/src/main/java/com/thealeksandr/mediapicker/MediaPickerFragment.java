@@ -86,7 +86,7 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
         public void onClick(long id, @NotNull Uri uri, int type) {
             mCurrentUri = uri;
             if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) {
-                showImagePreview(id, uri);
+                showImagePreview(uri);
             } else {
                 showVideoPreview(uri);
             }
@@ -94,7 +94,7 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
 
     };
 
-    private void showImagePreview(Long id, Uri uri) {
+    private void showImagePreview(Uri uri) {
         mPreviewImageView.setVisibility(View.VISIBLE);
         mPreviewVideoView.setVisibility(View.INVISIBLE);
         Glide
@@ -103,21 +103,17 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
                 .dontAnimate()
                 .centerCrop()
                 .into(mPreviewImageView);
-        //ThumbnailUtils.extractThumbnail()
-        /*previewImageView?.setImage(ImageSource.bitmap(
-                MediaStore.Images.Thumbnails.getThumbnail(context.contentResolver, id,
-                MediaStore.Images.Thumbnails.FULL_SCREEN_KIND, null)))*/
-        //previewImageView?.setImage(ImageSource.uri(uri), ImageViewState(2f, PointF(0.5f, 0.5f), 0))
     }
 
     private void showVideoPreview(Uri uri) {
-
+        mPreviewImageView.setVisibility(View.INVISIBLE);
+        mPreviewVideoView.setVisibility(View.VISIBLE);
     }
 
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
-
+        mSurface = new Surface(surfaceTexture);
     }
 
     @Override
