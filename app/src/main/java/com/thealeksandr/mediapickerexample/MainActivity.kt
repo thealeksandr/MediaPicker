@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
-import com.thealeksandr.mediapicker.MediaPickerFragment
+import com.thealeksandr.mediapicker.MediaOldPickerFragment
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        showFragment(MediaPickerFragment(), R.id.activity_main)
+        showFragment(MediaOldPickerFragment(), R.id.activity_main)
         //showFragment(Camera2BasicFragment(), R.id.activity_main)
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);

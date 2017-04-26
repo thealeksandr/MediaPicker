@@ -20,7 +20,7 @@ import com.thealeksandr.mediapicker.adapters.MediaCursorAdapter
 /**
  * Created by Aleksandr Nikiforov on 2/14/17.
  */
-class MediaPickerFragment : Fragment(), TextureView.SurfaceTextureListener  {
+class MediaOldPickerFragment : Fragment(), TextureView.SurfaceTextureListener  {
     override fun onSurfaceTextureDestroyed(p0: SurfaceTexture?): Boolean {
         return true
     }
@@ -128,7 +128,7 @@ class MediaPickerFragment : Fragment(), TextureView.SurfaceTextureListener  {
         mMediaPlayer.prepare()
         mMediaPlayer.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
             override fun onVideoSizeChanged(p0: MediaPlayer?, p1: Int, p2: Int) {
-                
+
             }
         })
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
