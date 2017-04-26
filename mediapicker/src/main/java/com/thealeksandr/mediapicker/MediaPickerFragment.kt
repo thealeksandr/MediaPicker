@@ -1,6 +1,9 @@
 package com.thealeksandr.mediapicker
 
 
+import android.graphics.SurfaceTexture
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -8,11 +11,8 @@ import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
-import android.widget.VideoView
 import com.bumptech.glide.Glide
 import com.thealeksandr.mediapicker.adapters.MediaCursorAdapter
 
@@ -20,11 +20,24 @@ import com.thealeksandr.mediapicker.adapters.MediaCursorAdapter
 /**
  * Created by Aleksandr Nikiforov on 2/14/17.
  */
-class MediaPickerFragment : Fragment() {
+class MediaPickerFragment : Fragment(), TextureView.SurfaceTextureListener  {
+    override fun onSurfaceTextureDestroyed(p0: SurfaceTexture?): Boolean {
+        return true
+    }
+
+    override fun onSurfaceTextureSizeChanged(p0: SurfaceTexture?, p1: Int, p2: Int) {
+
+    }
+
+    override fun onSurfaceTextureUpdated(p0: SurfaceTexture?) {
+
+    }
 
     private var previewImageView: ImageView? = null
-    private var previewVideoView: VideoView? = null
+    private var previewVideoView: TextureView? = null
+    private var mMediaPlayer: MediaPlayer? = null
     private var currentUri: Uri? = null
+    private var surface: Surface? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -50,7 +63,8 @@ class MediaPickerFragment : Fragment() {
         recyclerView.adapter = adapter
 
         previewImageView = view.findViewById(R.id.preview_image_view) as ImageView
-        previewVideoView = view.findViewById(R.id.preview_video_view) as VideoView
+        previewVideoView = view.findViewById(R.id.preview_video_view) as TextureView
+        previewVideoView?.surfaceTextureListener = this
 
         var appBarLayout = view.findViewById(R.id.app_bar) as AppBarLayout
 
@@ -68,6 +82,9 @@ class MediaPickerFragment : Fragment() {
 
     }
 
+    override fun onSurfaceTextureAvailable(p0: SurfaceTexture?, p1: Int, p2: Int) {
+        surface = Surface(p0)
+    }
 
     val onItemClickListener = object : MediaCursorAdapter.OnItemClickListener {
         override fun onClick(id: Long, uri: Uri, type: Int) {
@@ -101,9 +118,22 @@ class MediaPickerFragment : Fragment() {
         previewVideoView?.visibility = View.VISIBLE
         //val thumbnail = ThumbnailUtils.createVideoThumbnail(
         //        FileUtils.getPath(context, uri), MediaStore.Video.Thumbnails.FULL_SCREEN_KIND)
-        previewVideoView!!.setVideoURI(uri)
-        previewVideoView!!.requestFocus()
-        previewVideoView!!.start()
+        //previewVideoView!!.setVideoURI(uri)
+        //previewVideoView!!.requestFocus()
+        //previewVideoView!!.start()
+        var mMediaPlayer = MediaPlayer()
+        mMediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+        mMediaPlayer.setDataSource(activity,uri)
+        mMediaPlayer.setSurface(surface)
+        mMediaPlayer.prepare()
+        mMediaPlayer.setOnVideoSizeChangedListener(object : MediaPlayer.OnVideoSizeChangedListener {
+            override fun onVideoSizeChanged(p0: MediaPlayer?, p1: Int, p2: Int) {
+                
+            }
+        })
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+        mMediaPlayer.start()
+
     }
 
     /**
@@ -112,6 +142,8 @@ class MediaPickerFragment : Fragment() {
     fun getCurrentMediaUri(): Uri? {
         return currentUri
     }
+
+
 
 
 
