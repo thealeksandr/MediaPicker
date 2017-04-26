@@ -7,6 +7,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.AsyncTask
 import android.provider.MediaStore
+import android.support.v4.util.LruCache
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -26,12 +27,21 @@ class MediaCursorAdapter: CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHold
     private val typeColumnIndex: Int
     var onItemClickListener: OnItemClickListener? = null
     var first: Boolean = true
+    private var mMemoryCache: LruCache<Long, Bitmap>? = null
+    private val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
+    val cacheSize = maxMemory / 8
+    private val dateCache = mutableMapOf<Long, String>()
 
     constructor(context: Context, cursor: Cursor, autoRequery: Boolean)
             : super(context, cursor, autoRequery) {
         this.context = context
         idColumnIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID)
         typeColumnIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE)
+        mMemoryCache = object : LruCache<Long, Bitmap>(cacheSize) {
+            override fun sizeOf(key: Long?, bitmap: Bitmap?): Int {
+                return bitmap!!.byteCount / 1024
+            }
+        }
     }
 
     override fun onBindViewHolder(viewHolder: MediaCursorAdapter.MediaViewHolder?,
@@ -54,7 +64,16 @@ class MediaCursorAdapter: CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHold
             first = false
         }
         viewHolder.imageView.setImageBitmap(null)
-        GetFileInfoTask(type, uri, viewHolder).execute(id)
+        val bitmap = getBitmapFromMemCache(id)
+        if (bitmap != null) {
+            viewHolder.imageView.setImageBitmap(bitmap)
+            viewHolder.textView.text = dateCache[id]
+            viewHolder.itemView.setOnClickListener({
+                onItemClickListener?.onClick(id, uri, type)
+            })
+        } else {
+            GetFileInfoTask(type, uri, viewHolder).execute(id)
+        }
 
     }
 
@@ -72,10 +91,8 @@ class MediaCursorAdapter: CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHold
      * @see android.support.v7.widget.RecyclerView.ViewHolder.ViewHolder
      */
     class MediaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
         val imageView: ImageView = view.findViewById(R.id.thumb_image_view) as ImageView
         val textView: TextView = view.findViewById(R.id.duration_text_view) as TextView
-
     }
 
     interface OnItemClickListener {
@@ -110,6 +127,10 @@ class MediaCursorAdapter: CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHold
 
 
         override fun onPostExecute(result: Bitmap?) {
+            if (result != null) {
+                addBitmapToMemoryCache(id!!, result)
+                dateCache.put(id!!, time?: "")
+            }
             if (viewHolder.itemView.tag == id) {
                 viewHolder.imageView.setImageBitmap(result)
                 viewHolder.textView.text = time
@@ -119,6 +140,16 @@ class MediaCursorAdapter: CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHold
             }
 
         }
+    }
+
+    fun addBitmapToMemoryCache(key: Long, bitmap: Bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            mMemoryCache?.put(key, bitmap)
+        }
+    }
+
+    fun getBitmapFromMemCache(key: Long): Bitmap? {
+        return mMemoryCache?.get(key)
     }
 
 }

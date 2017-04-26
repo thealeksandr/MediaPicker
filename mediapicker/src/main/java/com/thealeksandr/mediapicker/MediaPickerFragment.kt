@@ -24,6 +24,7 @@ class MediaPickerFragment : Fragment() {
 
     private var previewImageView: ImageView? = null
     private var previewVideoView: VideoView? = null
+    private var currentUri: Uri? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -48,8 +49,6 @@ class MediaPickerFragment : Fragment() {
         val recyclerView = view.findViewById(R.id.media_list_view) as RecyclerView
         recyclerView.adapter = adapter
 
-
-
         previewImageView = view.findViewById(R.id.preview_image_view) as ImageView
         previewVideoView = view.findViewById(R.id.preview_video_view) as VideoView
 
@@ -72,6 +71,7 @@ class MediaPickerFragment : Fragment() {
 
     val onItemClickListener = object : MediaCursorAdapter.OnItemClickListener {
         override fun onClick(id: Long, uri: Uri, type: Int) {
+            currentUri = uri
             if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) {
                 showImagePreview(id, uri)
             } else {
@@ -104,8 +104,15 @@ class MediaPickerFragment : Fragment() {
         previewVideoView!!.setVideoURI(uri)
         previewVideoView!!.requestFocus()
         previewVideoView!!.start()
-
-
     }
+
+    /**
+     * Get selected object uri.
+     */
+    fun getCurrentMediaUri(): Uri? {
+        return currentUri
+    }
+
+
 
 }
