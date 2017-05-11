@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.thealeksandr.mediapicker.adapters.MediaCursorAdapter;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by Aleksandr Nikiforov on 4/26/17.
@@ -83,7 +82,7 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
     MediaCursorAdapter.OnItemClickListener mOnItemClickListener
             = new MediaCursorAdapter.OnItemClickListener() {
         @Override
-        public void onClick(long id, @NotNull Uri uri, int type) {
+        public void onClick(long id, Uri uri, int type) {
             mCurrentUri = uri;
             if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) {
                 showImagePreview(uri);
@@ -106,8 +105,37 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
     }
 
     private void showVideoPreview(Uri uri) {
-        mPreviewImageView.setVisibility(View.INVISIBLE);
-        mPreviewVideoView.setVisibility(View.VISIBLE);
+        /*try {
+            mPreviewImageView.setVisibility(View.INVISIBLE);
+            mPreviewVideoView.setVisibility(View.VISIBLE);
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setVideoScalingMode(
+                    MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
+            mediaPlayer.setDataSource(getActivity(), uri);
+            mediaPlayer.setSurface(mSurface);
+
+                mediaPlayer.prepare();
+
+            mediaPlayer.setOnVideoSizeChangedListener(
+                    new MediaPlayer.OnVideoSizeChangedListener() {
+                @Override
+                public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
+
+                }
+            });
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+
+    /**
+     * Get selected object uri.
+     */
+    public Uri getCurrentMediaUri() {
+        return mCurrentUri;
     }
 
 
@@ -130,4 +158,6 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
     public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
 
     }
+
+
 }
