@@ -6,6 +6,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
+import com.thealeksandr.mediapicker.R;
+
 /**
  * Created by Aleksandr Nikiforov on 2/14/17.
  */
@@ -14,6 +16,7 @@ public class AutofitRecyclerView extends RecyclerView {
 
     private int mColumnWidth = 0;
     private GridLayoutManager mManager;
+    private GridSpacingItemDecoration mGridSpacingItemDecoration;
 
     /**
      * @see android.support.v7.widget.RecyclerView#RecyclerView(android.content.Context)
@@ -44,7 +47,7 @@ public class AutofitRecyclerView extends RecyclerView {
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
             int[] attrsArray = {
-                    android.R.attr.columnWidth
+                    R.attr.approximate_column_width
             };
             TypedArray array = context.obtainStyledAttributes(
                     attrs, attrsArray);
@@ -53,6 +56,8 @@ public class AutofitRecyclerView extends RecyclerView {
         }
 
         mManager = new GridLayoutManager(getContext(), 1);
+
+        //addItemDecoration(mGridSpacingItemDecoration);
         setLayoutManager(mManager);
     }
 
@@ -61,7 +66,15 @@ public class AutofitRecyclerView extends RecyclerView {
         if (mColumnWidth > 0) {
             int spanCount = Math.max(1, getMeasuredWidth() / mColumnWidth);
             mManager.setSpanCount(spanCount);
+            //int spanSize = getMeasuredWidth() - spanCount * mColumnWidth + 3;
+            if (mGridSpacingItemDecoration == null) {
+                mGridSpacingItemDecoration = new GridSpacingItemDecoration(spanCount, 3,
+                        false);
+                mGridSpacingItemDecoration.setSpanCount(spanCount);
+                addItemDecoration(mGridSpacingItemDecoration);
+            }
         }
+
     }
 }
 

@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v4.util.LruCache;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
 
     private Context context;
     private int idColumnIndex;
+    private int nameColumnIndex;
     private int typeColumnIndex;
     private OnItemClickListener onItemClickListener;
     private boolean first;
@@ -39,6 +41,7 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
         super(context, cursor, autoRequery);
         this.context = context;
         idColumnIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID);
+        nameColumnIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME);
         typeColumnIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE);
         mMemoryCache = new LruCache<Long, Bitmap>(cacheSize) {
             @Override
@@ -52,6 +55,7 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
     public void onBindViewHolder(MediaViewHolder viewHolder, Cursor cursor) {
         final int type = cursor.getInt(typeColumnIndex);
         final long id = cursor.getLong(idColumnIndex);
+        final String name = cursor.getString(nameColumnIndex);
         final Uri uri;
         if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) {
             uri = Uri.withAppendedPath(
@@ -81,7 +85,7 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
                 }
             });
         } else {
-            new GetFileInfoTask(type, uri, viewHolder).execute(id);
+            new GetFileInfoTask(type, uri, name, viewHolder).execute(id);
         }
 
     }
@@ -104,7 +108,7 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
         ImageView imageView;
         TextView textView;
 
-        public MediaViewHolder(View itemView) {
+        MediaViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.thumb_image_view);
             textView = (TextView) itemView.findViewById(R.id.duration_text_view);
@@ -123,16 +127,18 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
     private class GetFileInfoTask extends AsyncTask<Long, Integer, Bitmap> {
 
         private String time;
+        private String name;
         private Long id;
 
         private int type;
         private Uri uri;
         private MediaViewHolder viewHolder;
 
-        public GetFileInfoTask(int type, Uri uri, MediaViewHolder viewHolder) {
+        GetFileInfoTask(int type, Uri uri, String name, MediaViewHolder viewHolder) {
             this.type = type;
             this.uri = uri;
             this.viewHolder = viewHolder;
+            this.name = name;
         }
 
         @Override
@@ -146,8 +152,12 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
                 bitmap = MediaStore.Video.Thumbnails.getThumbnail(context.getContentResolver(),
                         id, MediaStore.Video.Thumbnails.MINI_KIND, null);
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                retriever.setDataSource(context, uri);
-                time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                try {
+                    retriever.setDataSource(context, uri);
+                    time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                } catch (IllegalArgumentException e) {
+                    Log.d("FAIL_DATA", name);
+                }
             }
             return bitmap;
         }

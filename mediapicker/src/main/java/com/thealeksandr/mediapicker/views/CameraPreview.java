@@ -23,6 +23,7 @@ import java.util.List;
  * This class assumes the parent layout is RelativeLayout.LayoutParams.
  */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+
     private static boolean DEBUGGING = true;
     private static final String LOG_TAG = "CameraPreviewSample";
     private static final String CAMERA_PARAM_ORIENTATION = "orientation";

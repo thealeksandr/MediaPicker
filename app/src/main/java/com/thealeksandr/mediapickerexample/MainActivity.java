@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
-import com.thealeksandr.mediapicker.CameraBasicFragment;
+import com.thealeksandr.mediapicker.MediaPickerFragment;
 
 /**
  * Created by Aleksandr Nikiforov on 5/11/17.
@@ -19,9 +19,9 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //showFragment(new MediaPickerFragment(), R.id.activity_main);
+        showFragment(new MediaPickerFragment(), R.id.activity_main);
         //showFragment(new Camera2BasicFragment(), R.id.activity_main);
-        showFragment(new CameraBasicFragment(), R.id.activity_main);
+        //showFragment(new CameraBasicFragment(), R.id.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
