@@ -21,9 +21,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.thealeksandr.mediapicker.adapters.MediaCursorAdapter;
 import com.thealeksandr.mediapicker.views.OnDragTouchListener;
 
@@ -36,7 +36,7 @@ import java.io.IOException;
 
 public class MediaPickerFragment extends Fragment implements TextureView.SurfaceTextureListener {
 
-    private ImageView mPreviewImageView;
+    private PhotoView mPreviewImageView;
     private TextureView mPreviewVideoView;
     private View mPreviewVideoLayout;
     private MediaPlayer mMediaPlayer;
@@ -73,12 +73,12 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
         }
         mediaCursor.moveToFirst();
 
-        MediaCursorAdapter adapter = new MediaCursorAdapter(getActivity(), mediaCursor, false);
+        final MediaCursorAdapter adapter = new MediaCursorAdapter(getActivity(), mediaCursor, false);
         adapter.setOnItemClickListener(mOnItemClickListener);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.media_list_view);
         recyclerView.setAdapter(adapter);
 
-        mPreviewImageView = (ImageView) view.findViewById(R.id.preview_image_view);
+        mPreviewImageView = (PhotoView) view.findViewById(R.id.preview_image_view);
         mPreviewVideoView = (TextureView) view.findViewById(R.id.preview_video_view);
         mPreviewVideoLayout = view.findViewById(R.id.preview_video_layout);
         mPreviewVideoView.setSurfaceTextureListener(this);
@@ -104,10 +104,9 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
                     view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
                 mWidth = view.getWidth();
-
             }
         });
-        mPreviewVideoView.setOnTouchListener(new OnDragTouchListener(mPreviewVideoView, mPreviewVideoLayout));
+
         return view;
     }
 
@@ -115,12 +114,13 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
     MediaCursorAdapter.OnItemClickListener mOnItemClickListener
             = new MediaCursorAdapter.OnItemClickListener() {
         @Override
-        public void onClick(long id, Uri uri, int type) {
+        public void onClick(long id, final Uri uri, int type) {
             mCurrentUri = uri;
             if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) {
                 showImagePreview(uri);
             } else {
                 showVideoPreview(uri);
+
             }
         }
 
@@ -134,8 +134,8 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
                 .with(this)
                 .load(uri)
                 .dontAnimate()
-                .centerCrop()
                 .into(mPreviewImageView);
+
     }
 
     private void resetMediaPlayer() {
@@ -148,6 +148,7 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
+            mMediaPlayer = null;
         }
     }
 
@@ -159,7 +160,6 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setDataSource(getActivity(), uri);
             mMediaPlayer.setSurface(mSurface);
-            mMediaPlayer.prepare();
             mMediaPlayer.setLooping(true);
             mMediaPlayer.setOnVideoSizeChangedListener(
                     new MediaPlayer.OnVideoSizeChangedListener() {
@@ -177,15 +177,23 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
                         newWidth = mWidth;
                         newHeight = newWidth * height / width;
                     }
+                    mPreviewVideoView.animate().x(0).y(0).setDuration(0).start();
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(newWidth, newHeight);
                     layoutParams.gravity = Gravity.CENTER;
                     mPreviewVideoView.setLayoutParams(layoutParams);
-
-
+                    mPreviewVideoView.setOnTouchListener(new OnDragTouchListener(mPreviewVideoView, mPreviewVideoLayout));
                 }
             });
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mMediaPlayer.start();
+            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mMediaPlayer.start();
+                }
+            });
+
+            mMediaPlayer.prepareAsync();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -203,6 +211,9 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
         mSurface = new Surface(surfaceTexture);
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setSurface(mSurface);
+        }
     }
 
     @Override

@@ -26,12 +26,15 @@ import java.util.Map;
  */
 public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter.MediaViewHolder> {
 
+    private static final long MILLS_IN_SECOND = 1000;
+    private static final long MILLS_IN_HOUR = 1000 * 60 * 60;
+
     private Context context;
     private int idColumnIndex;
     private int nameColumnIndex;
     private int typeColumnIndex;
     private OnItemClickListener onItemClickListener;
-    private boolean first;
+    private boolean first = true;
     private LruCache<Long, Bitmap> mMemoryCache;
     private long maxMemory = (Runtime.getRuntime().maxMemory() / 1024);
     int cacheSize = (int) (maxMemory / 8);
@@ -155,6 +158,7 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
                 try {
                     retriever.setDataSource(context, uri);
                     time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                    time = formatTime(time);
                 } catch (IllegalArgumentException e) {
                     Log.d("FAIL_DATA", name);
                 }
@@ -185,6 +189,21 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
             }
 
         }
+
+        private String formatTime(String time) {
+            if (time != null) {
+                long duration = Long.valueOf(time);
+                long seconds = duration / MILLS_IN_SECOND;
+                long s = seconds % 60;
+                long m = (seconds / 60) % 60;
+                long h = (seconds / (60 * 60)) % 24;
+                if (duration < MILLS_IN_HOUR) {
+                    return String.format("%02d:%02d", m,s);
+                }
+                return String.format("%d:%02d:%02d", h,m,s);
+            }
+            return null;
+        }
     }
 
     private void addBitmapToMemoryCache(long key, Bitmap bitmap) {
@@ -192,6 +211,8 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
             mMemoryCache.put(key, bitmap);
         }
     }
+
+
 
     private Bitmap getBitmapFromMemCache(long key) {
         return mMemoryCache.get(key);
