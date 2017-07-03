@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.WindowManager;
 
 import com.thealeksandr.mediapicker.MediaPickerFragment;
 
@@ -22,9 +21,6 @@ public class MainActivity extends AppCompatActivity {
         showFragment(new MediaPickerFragment(), R.id.activity_main);
         //showFragment(new Camera2BasicFragment(), R.id.activity_main);
         //showFragment(new CameraBasicFragment(), R.id.activity_main);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
     }
 
     private void showFragment(Fragment fragment, int containerId) {
