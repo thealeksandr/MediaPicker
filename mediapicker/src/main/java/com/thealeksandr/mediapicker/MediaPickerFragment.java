@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
-import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.thealeksandr.mediapicker.adapters.MediaCursorAdapter;
 import com.thealeksandr.mediapicker.views.OnDragTouchListener;
@@ -130,11 +129,12 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
         resetMediaPlayer();
         mPreviewImageView.setVisibility(View.VISIBLE);
         mPreviewVideoLayout.setVisibility(View.INVISIBLE);
-        Glide
+        mPreviewImageView.setImageURI(uri);
+        /*Glide
                 .with(this)
                 .load(uri)
                 .dontAnimate()
-                .into(mPreviewImageView);
+                .into(mPreviewImageView);*/
 
     }
 
