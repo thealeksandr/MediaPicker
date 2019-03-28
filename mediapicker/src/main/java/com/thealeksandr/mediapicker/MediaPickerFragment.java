@@ -49,21 +49,21 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
 
         final View view = inflater.inflate(R.layout.fragment_media_picker, container, false);
 
-        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=" +
+        final String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=" +
                 MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE +
                 " OR " +
                 MediaStore.Files.FileColumns.MEDIA_TYPE + "=" +
                 MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
-        String[] columns = new String[] {
+        final String[] columns = new String[] {
                 MediaStore.Files.FileColumns.MEDIA_TYPE,
                 MediaStore.Files.FileColumns._ID,
                 MediaStore.Files.FileColumns.DISPLAY_NAME
 
         };
-        String orderBy = MediaStore.Files.FileColumns._ID;
+        final String orderBy = MediaStore.Files.FileColumns._ID;
 
-        Cursor mediaCursor = getActivity().getContentResolver().query(
+        final Cursor mediaCursor = getActivity().getContentResolver().query(
                 MediaStore.Files.getContentUri("external"), columns, selection,
                 null, orderBy);
 
@@ -74,19 +74,19 @@ public class MediaPickerFragment extends Fragment implements TextureView.Surface
 
         final MediaCursorAdapter adapter = new MediaCursorAdapter(getActivity(), mediaCursor, false);
         adapter.setOnItemClickListener(mOnItemClickListener);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.media_list_view);
+        final RecyclerView recyclerView = view.findViewById(R.id.media_list_view);
         recyclerView.setAdapter(adapter);
 
-        mPreviewImageView = (PhotoView) view.findViewById(R.id.preview_image_view);
-        mPreviewVideoView = (TextureView) view.findViewById(R.id.preview_video_view);
+        mPreviewImageView = view.findViewById(R.id.preview_image_view);
+        mPreviewVideoView = view.findViewById(R.id.preview_video_view);
         mPreviewVideoLayout = view.findViewById(R.id.preview_video_layout);
         mPreviewVideoView.setSurfaceTextureListener(this);
 
-        AppBarLayout appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar);
+        final AppBarLayout appBarLayout = view.findViewById(R.id.app_bar);
 
-        CoordinatorLayout.LayoutParams params
+        final CoordinatorLayout.LayoutParams params
                 = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
+        final AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
         behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
             @Override
             public boolean canDrag(AppBarLayout appBarLayout) {
