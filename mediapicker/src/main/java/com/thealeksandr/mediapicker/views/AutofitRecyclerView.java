@@ -2,8 +2,8 @@ package com.thealeksandr.mediapicker.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import com.thealeksandr.mediapicker.R;
@@ -19,14 +19,14 @@ public class AutofitRecyclerView extends RecyclerView {
     private GridSpacingItemDecoration mGridSpacingItemDecoration;
 
     /**
-     * @see android.support.v7.widget.RecyclerView#RecyclerView(android.content.Context)
+     * @see RecyclerView#RecyclerView(android.content.Context)
      */
     public AutofitRecyclerView(Context context) {
         super(context);
     }
 
     /**
-     * @see android.support.v7.widget.RecyclerView#RecyclerView(android.content.Context,
+     * @see RecyclerView#RecyclerView(android.content.Context,
      * AttributeSet)
      */
     public AutofitRecyclerView(Context context, AttributeSet attrs) {
@@ -36,7 +36,7 @@ public class AutofitRecyclerView extends RecyclerView {
 
 
     /**
-     * @see android.support.v7.widget.RecyclerView#RecyclerView(android.content.Context,
+     * @see RecyclerView#RecyclerView(android.content.Context,
      * AttributeSet, int)
      */
     public AutofitRecyclerView(Context context, AttributeSet attrs, int defStyle) {

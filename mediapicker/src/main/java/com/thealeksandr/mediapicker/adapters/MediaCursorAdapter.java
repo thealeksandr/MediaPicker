@@ -7,8 +7,8 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.support.v4.util.LruCache;
-import android.support.v7.widget.RecyclerView;
+import androidx.collection.LruCache;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,7 +104,7 @@ public class MediaCursorAdapter extends CursorRecyclerAdapter<MediaCursorAdapter
     }
 
     /**
-     * @see android.support.v7.widget.RecyclerView.ViewHolder#ViewHolder(View view)
+     * @see RecyclerView.ViewHolder#ViewHolder(View view)
      */
     class MediaViewHolder extends RecyclerView.ViewHolder {
 
